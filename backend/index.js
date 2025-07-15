@@ -27,7 +27,10 @@ app.post('/scrape', async (req, res) => {
 
   // Helper to extract and clean content
   function extractSemanticHtml($, contentRoot) {
-    const allowedTags = ['h1','h2','h3','h4','h5','h6','p','ul','ol','li','a','button','img','strong','em','b','i','blockquote'];
+    const allowedTags = [
+      'h1','h2','h3','h4','h5','h6','p','ul','ol','li','a','button','img','strong','em','b','i','blockquote',
+      'table','thead','tbody','tfoot','tr','th','td'
+    ];
     contentRoot.find('*').each(function() {
       if (!allowedTags.includes(this.tagName)) {
         $(this).replaceWith($(this).contents());
