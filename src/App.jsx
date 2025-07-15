@@ -5,7 +5,10 @@ function RenderPage({ title, semanticHtml, imageCount, headingLevel = 1 }) {
   return (
     <section className="mb-8 p-4 bg-white rounded shadow">
       <Heading className={`text-${headingLevel === 1 ? '3xl' : '2xl'} font-bold mb-2 text-primary`}>{title}</Heading>
-      <div className="prose max-w-none" dangerouslySetInnerHTML={{ __html: semanticHtml }} />
+      <div
+        className="prose max-w-none prose-h2:text-2xl prose-h2:font-bold prose-h2:text-blue-700 prose-h3:text-xl prose-h3:font-semibold prose-h3:text-blue-600"
+        dangerouslySetInnerHTML={{ __html: semanticHtml }}
+      />
       <div className="mt-2 text-sm text-gray-500">Images on page: {imageCount}</div>
     </section>
   );
