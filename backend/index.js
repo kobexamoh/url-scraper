@@ -26,11 +26,14 @@ app.post('/scrape', async (req, res) => {
   }
 
   // Helper to extract and clean content
-  function extractSemanticHtml($, contentRoot) {
+  function extractSemanticHtml($, contentRoot, removeFirstH1 = false) {
     const allowedTags = [
       'h1','h2','h3','h4','h5','h6','p','ul','ol','li','a','button','img','strong','em','b','i','blockquote',
       'table','thead','tbody','tfoot','tr','th','td'
     ];
+    if (removeFirstH1) {
+      contentRoot.find('h1').first().remove();
+    }
     contentRoot.find('*').each(function() {
       if (!allowedTags.includes(this.tagName)) {
         $(this).replaceWith($(this).contents());
@@ -65,7 +68,7 @@ app.post('/scrape', async (req, res) => {
     if (!title) {
       title = $('title').text().trim() || 'Untitled';
     }
-    const { semanticHtml, imageCount } = extractSemanticHtml($, mainContent.clone());
+    const { semanticHtml, imageCount } = extractSemanticHtml($, mainContent.clone(), true);
     return { title, semanticHtml, imageCount };
   }
 
@@ -87,7 +90,7 @@ app.post('/scrape', async (req, res) => {
     if (!title) {
       title = $('title').text().trim() || 'Untitled';
     }
-    const { semanticHtml, imageCount } = extractSemanticHtml($, mainContent.clone());
+    const { semanticHtml, imageCount } = extractSemanticHtml($, mainContent.clone(), true);
     // Sidebar links
     const sidebar = row.find('.nav-wrapper.col-12.col-lg-3').first();
     const subpageLinks = [];
