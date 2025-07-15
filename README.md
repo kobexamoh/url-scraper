@@ -1,68 +1,8 @@
-# Modern React Starter
+# Design URL Scraper
 
-A modern, opinionated React starter template built with Vite, Tailwind CSS, and best practices configurations. This template provides a robust foundation for building scalable React applications with an excellent developer experience.
+A URL scraper for making mockups with real content on work sites.
 
-## 🚀 Features
-
-- ⚡️ [Vite](https://vitejs.dev/) - Lightning fast build tool
-- ⚛️ [React 19](https://react.dev/) - Latest React version with improved features
-- 🎨 [Tailwind CSS](https://tailwindcss.com/) - Utility-first CSS framework
-  - Custom container configurations
-  - Responsive padding defaults
-  - Custom colour scheme
-  - Animation utilities
-- 🔧 Modern tooling
-  - ESLint configuration for React
-  - PostCSS setup
-  - Proper Git ignore rules
-- 📱 Responsive layouts by default
-- 🎯 Optimized production builds
-
-## 📦 Getting Started
-
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/kobexamoh/modern-react-starter.git your-project-name
-   cd your-project-name
-   ```
-
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
-
-3. Start the development server:
-   ```bash
-   npm run dev
-   ```
-
-4. Open http://localhost:5173 to view your application
-
-## 🛠️ Project Structure
-
-```
-modern-react-starter/
-├── public/             # Static assets
-├── src/
-│   ├── assets/        # Project assets
-│   ├── App.jsx        # Main application component
-│   ├── main.jsx       # Application entry point
-│   └── index.css      # Global styles and Tailwind directives
-├── .gitignore         # Git ignore rules
-├── index.html         # HTML entry point
-├── postcss.config.js  # PostCSS configuration
-├── tailwind.config.js # Tailwind CSS configuration
-└── vite.config.js     # Vite configuration
-```
-
-## 🎨 Tailwind Configuration
-
-This template includes a custom Tailwind configuration with:
-
-- Custom colour scheme (primary, secondary, accent)
-- Container configurations with responsive padding
-- Custom font family configurations
-- Animation utilities
+## Heads up: this is a WIP and only works for certain pages currently as a precursor to wireframing. It's a very specific use case and will (probably) not work for your needs. Do not use it for your work unless you know what you're doing!
 
 ## 📝 Available Scripts
 
