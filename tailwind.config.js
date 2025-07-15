@@ -28,5 +28,5 @@ export default {
       mono: ['Menlo', 'ui-monospace', 'monospace'],
     },
   },
-  plugins: [],
+  plugins: [require('@tailwindcss/typography')],
 }
