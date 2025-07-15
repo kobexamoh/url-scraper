@@ -5,12 +5,14 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:all": "concurrently \"vite\" \"node backend/index.js\"",
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
     "tailwind-init": "./node_modules/.bin/tailwindcss init -p"
   },
   "dependencies": {
+    "concurrently": "^9.2.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0"
   },
