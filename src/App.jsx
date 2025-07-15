@@ -14,18 +14,40 @@ function RenderPage({ title, semanticHtml, imageCount, headingLevel = 1 }) {
   );
 }
 
+function generateExportHTML(result) {
+  let html = '<!DOCTYPE html>\n<html lang="en">\n<head>\n<meta charset="UTF-8">\n<meta name="viewport" content="width=device-width, initial-scale=1.0">\n<title>Scraped Content</title>\n<style>\nbody { font-family: Arial, sans-serif; line-height: 1.6; margin: 0; padding: 20px; }\nh1 { font-size: 2rem; font-weight: bold; color: #0F172A; margin-bottom: 1rem; }\nh2 { font-size: 1.5rem; font-weight: bold; color: #1e40af; margin-bottom: 0.75rem; }\nh3 { font-size: 1.25rem; font-weight: 600; color: #2563eb; margin-bottom: 0.5rem; }\np { margin-bottom: 1rem; }\nul, ol { margin-bottom: 1rem; }\ntable { border-collapse: collapse; width: 100%; margin-bottom: 1rem; }\nth, td { border: 1px solid #ddd; padding: 8px; text-align: left; }\nth { background-color: #f2f2f2; }\n.section { margin-bottom: 2rem; }\n.image-count { font-size: 0.875rem; color: #6b7280; margin-top: 0.5rem; }\n</style>\n</head>\n<body>\n';
+  
+  // Main page
+  html += `<div class="section">\n<h1>${result.title}</h1>\n${result.semanticHtml}\n<div class="image-count">Images on page: ${result.imageCount}</div>\n</div>\n`;
+  
+  // Subpages
+  if (result.subpages && result.subpages.length > 0) {
+    html += '<h1>Subpages</h1>\n';
+    result.subpages.forEach(sub => {
+      if (!sub.error) {
+        html += `<div class="section">\n<h2>${sub.title}</h2>\n${sub.semanticHtml}\n<div class="image-count">Images on page: ${sub.imageCount}</div>\n</div>\n`;
+      }
+    });
+  }
+  
+  html += '</body>\n</html>';
+  return html;
+}
+
 export default function App() {
   const [url, setUrl] = useState('');
   const [scrapeSubpages, setScrapeSubpages] = useState(false);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
   const [error, setError] = useState(null);
+  const [exportStatus, setExportStatus] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setResult(null);
     setError(null);
+    setExportStatus('');
     try {
       const res = await fetch('http://localhost:3001/scrape', {
         method: 'POST',
@@ -40,6 +62,35 @@ export default function App() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const copyToClipboard = async () => {
+    if (!result) return;
+    try {
+      const html = generateExportHTML(result);
+      await navigator.clipboard.writeText(html);
+      setExportStatus('Copied to clipboard!');
+      setTimeout(() => setExportStatus(''), 3000);
+    } catch (err) {
+      setExportStatus('Failed to copy to clipboard');
+      setTimeout(() => setExportStatus(''), 3000);
+    }
+  };
+
+  const downloadHTML = () => {
+    if (!result) return;
+    const html = generateExportHTML(result);
+    const blob = new Blob([html], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'scraped-content.html';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    setExportStatus('Downloaded!');
+    setTimeout(() => setExportStatus(''), 3000);
   };
 
   return (
@@ -68,8 +119,17 @@ export default function App() {
         </button>
       </form>
       {error && <div className="mt-4 text-red-600">Error: {error}</div>}
+      {exportStatus && <div className="mt-4 text-green-600">{exportStatus}</div>}
       {result && (
         <div className="mt-8 w-full max-w-3xl">
+          <div className="flex gap-2 mb-4">
+            <button onClick={copyToClipboard} className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition">
+              Copy HTML
+            </button>
+            <button onClick={downloadHTML} className="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 transition">
+              Download HTML
+            </button>
+          </div>
           <RenderPage title={result.title} semanticHtml={result.semanticHtml} imageCount={result.imageCount} headingLevel={1} />
           {result.subpages && result.subpages.length > 0 && (
             <div>
