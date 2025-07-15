@@ -26,6 +26,7 @@ app.post('/scrape', async (req, res) => {
   }
 
   // Helper to extract and clean content
+  // TODO: handle accordions
   function extractSemanticHtml($, contentRoot, removeFirstH1 = false) {
     const allowedTags = [
       'h1','h2','h3','h4','h5','h6','p','ul','ol','li','a','button','img','strong','em','b','i','blockquote',
@@ -73,6 +74,7 @@ app.post('/scrape', async (req, res) => {
   }
 
   // Scrape subpages if requested
+  // TODO: if subpages don't match the style, don't scrape them and render graceful error message
   async function scrapeWithSubpages(mainUrl) {
     const response = await fetch(mainUrl);
     if (!response.ok) {
