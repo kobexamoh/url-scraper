@@ -1,9 +1,12 @@
 const express = require('express');
+const cors = require('cors');
 const app = express();
 const PORT = 3001;
 const fetch = require('node-fetch');
 const cheerio = require('cheerio');
 
+// Allow CORS from frontend during development
+app.use(cors({ origin: 'http://localhost:5173' }));
 app.use(express.json());
 
 // Test endpoint for scraping
