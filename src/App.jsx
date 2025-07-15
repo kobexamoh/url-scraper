@@ -1,5 +1,16 @@
 import { useState } from 'react';
 
+function RenderPage({ title, semanticHtml, imageCount, headingLevel = 1 }) {
+  const Heading = `h${headingLevel}`;
+  return (
+    <section className="mb-8 p-4 bg-white rounded shadow">
+      <Heading className={`text-${headingLevel === 1 ? '3xl' : '2xl'} font-bold mb-2 text-primary`}>{title}</Heading>
+      <div className="prose max-w-none" dangerouslySetInnerHTML={{ __html: semanticHtml }} />
+      <div className="mt-2 text-sm text-gray-500">Images on page: {imageCount}</div>
+    </section>
+  );
+}
+
 export default function App() {
   const [url, setUrl] = useState('');
   const [scrapeSubpages, setScrapeSubpages] = useState(false);
@@ -55,9 +66,27 @@ export default function App() {
       </form>
       {error && <div className="mt-4 text-red-600">Error: {error}</div>}
       {result && (
-        <pre className="mt-4 bg-gray-100 p-4 rounded text-xs max-w-2xl overflow-x-auto text-left">
-          {JSON.stringify(result, null, 2)}
-        </pre>
+        <div className="mt-8 w-full max-w-3xl">
+          <RenderPage title={result.title} semanticHtml={result.semanticHtml} imageCount={result.imageCount} headingLevel={1} />
+          {result.subpages && result.subpages.length > 0 && (
+            <div>
+              <h2 className="text-2xl font-bold mb-4 text-primary">Subpages</h2>
+              {result.subpages.map((sub, i) =>
+                sub.error ? (
+                  <div key={sub.url || i} className="mb-4 p-4 bg-red-100 text-red-700 rounded">Error scraping {sub.url}: {sub.error}</div>
+                ) : (
+                  <RenderPage key={sub.url || i} title={sub.title} semanticHtml={sub.semanticHtml} imageCount={sub.imageCount} headingLevel={2} />
+                )
+              )}
+            </div>
+          )}
+          <details className="mt-8">
+            <summary className="cursor-pointer text-sm text-gray-500">Show raw JSON</summary>
+            <pre className="bg-gray-100 p-4 rounded text-xs max-w-2xl overflow-x-auto text-left">
+              {JSON.stringify(result, null, 2)}
+            </pre>
+          </details>
+        </div>
       )}
     </div>
   );
