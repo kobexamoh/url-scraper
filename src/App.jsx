@@ -2,11 +2,30 @@ import { useState } from 'react';
 
 export default function App() {
   const [url, setUrl] = useState('');
+  const [scrapeSubpages, setScrapeSubpages] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [result, setResult] = useState(null);
+  const [error, setError] = useState(null);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // We'll add the actual scraping logic in the next step
-    alert(`URL submitted: ${url}`);
+    setLoading(true);
+    setResult(null);
+    setError(null);
+    try {
+      const res = await fetch('http://localhost:3001/scrape', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url, scrapeSubpages }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Unknown error');
+      setResult(data);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -22,8 +41,24 @@ export default function App() {
           onChange={e => setUrl(e.target.value)}
           required
         />
-        <button type="submit" className="bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition">Scrape</button>
+        <label className="flex items-center gap-2">
+          <input
+            type="checkbox"
+            checked={scrapeSubpages}
+            onChange={e => setScrapeSubpages(e.target.checked)}
+          />
+          Also scrape sidebar subpages
+        </label>
+        <button type="submit" className="bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition" disabled={loading}>
+          {loading ? 'Scraping...' : 'Scrape'}
+        </button>
       </form>
+      {error && <div className="mt-4 text-red-600">Error: {error}</div>}
+      {result && (
+        <pre className="mt-4 bg-gray-100 p-4 rounded text-xs max-w-2xl overflow-x-auto text-left">
+          {JSON.stringify(result, null, 2)}
+        </pre>
+      )}
     </div>
   );
 }
